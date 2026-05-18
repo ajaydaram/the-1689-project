@@ -50,7 +50,7 @@ export function HomeLayout({ onChapterClick }: HomeLayoutProps) {
           </h1>
           <div className="h-px w-24 bg-border-strong mx-auto mt-6"></div>
           <p className="mt-8 text-text-secondary font-serif max-w-2xl mx-auto leading-relaxed">
-            A classic layout for reading and understanding the articles of faith.
+            An immersive, typography-driven web application for studying the 1689 London Baptist Confession of Faith.
           </p>
         </header>
 
