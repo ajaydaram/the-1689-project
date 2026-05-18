@@ -1,5 +1,3 @@
-import bibleUrl from '../../public/bible.json?url';
-
 export type BibleBook = {
   name: string;
   abbrev: string;
@@ -14,7 +12,7 @@ let loadPromise: Promise<BibleData> | null = null;
 export async function getBibleData(): Promise<BibleData> {
   if (cachedData) return cachedData;
   if (!loadPromise) {
-    loadPromise = fetch(bibleUrl)
+    loadPromise = fetch('/bible.json')
       .then(res => {
          if (!res.ok) throw new Error("Failed to load bible.json");
          return res.json();
