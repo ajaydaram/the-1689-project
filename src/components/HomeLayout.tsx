@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import fm from 'front-matter';
-import { Search, X } from 'lucide-react';
 
 interface HomeLayoutProps {
   onChapterClick: (id: number) => void;
@@ -15,8 +14,6 @@ interface ChapterMetadata {
 }
 
 export function HomeLayout({ onChapterClick }: HomeLayoutProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-
   const chapters = useMemo<ChapterMetadata[]>(() => {
     try {
       // Eagerly load all raw MDX contents
@@ -41,17 +38,6 @@ export function HomeLayout({ onChapterClick }: HomeLayoutProps) {
     }
   }, []);
 
-  const filteredChapters = useMemo(() => {
-    if (!searchQuery.trim()) return chapters;
-    const lowerQuery = searchQuery.toLowerCase();
-    return chapters.filter(
-      (c) =>
-        c.title.toLowerCase().includes(lowerQuery) ||
-        c.preview.toLowerCase().includes(lowerQuery) ||
-        c.content.toLowerCase().includes(lowerQuery)
-    );
-  }, [chapters, searchQuery]);
-
   return (
     <div className="flex-1 overflow-y-auto bg-surface-bg transition-colors p-6 lg:p-12 custom-scrollbar">
       <div className="max-w-5xl mx-auto">
@@ -68,34 +54,13 @@ export function HomeLayout({ onChapterClick }: HomeLayoutProps) {
           </p>
         </header>
 
-        <div className="max-w-xl mx-auto mb-10 relative">
-          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-            <Search className="h-4 w-4 text-text-secondary" />
-          </div>
-          <input
-            type="text"
-            className="w-full pl-11 pr-10 py-3 bg-surface-nav border border-border-subtle rounded-full shadow-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all font-serif text-text-primary placeholder:text-text-secondary placeholder:font-sans placeholder:text-sm text-center lg:text-left"
-            placeholder="Search theological topics, keywords, scriptures..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute inset-y-0 right-4 flex items-center text-text-secondary hover:text-accent transition-colors"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        {filteredChapters.length === 0 ? (
+        {chapters.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-text-secondary font-serif text-lg">No chapters found matching "{searchQuery}"</p>
+            <p className="text-text-secondary font-serif text-lg">No chapters available.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredChapters.map((chapter) => (
+            {chapters.map((chapter) => (
               <div 
                 key={chapter.id} 
                 onClick={() => onChapterClick(chapter.id)}

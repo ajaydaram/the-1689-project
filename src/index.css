@@ -125,19 +125,25 @@ body {
 }
 
 /* Font Sizing Controls */
-.font-settings-base .prose {
-  font-size: 1rem;
-  line-height: 1.7;
+.font-settings-base .prose p, 
+.font-settings-base .prose li, 
+.font-settings-base .prose .text-lg {
+  font-size: 1rem !important;
+  line-height: 1.7 !important;
 }
 
-.font-settings-lg .prose {
-  font-size: 1.125rem;
-  line-height: 1.8;
+.font-settings-lg .prose p, 
+.font-settings-lg .prose li,
+.font-settings-lg .prose .text-lg {
+  font-size: 1.125rem !important;
+  line-height: 1.8 !important;
 }
 
-.font-settings-xl .prose {
-  font-size: 1.25rem;
-  line-height: 1.9;
+.font-settings-xl .prose p, 
+.font-settings-xl .prose li,
+.font-settings-xl .prose .text-lg {
+  font-size: 1.25rem !important;
+  line-height: 1.9 !important;
 }
 
 /* Custom Footnotes Styles */

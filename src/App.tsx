@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, Link, useParams } from "react-router-dom";
 import { HomeLayout } from "./components/HomeLayout";
 import { ArticleLayout } from "./components/ArticleLayout";
@@ -29,6 +29,11 @@ export default function App() {
   const [fontSize, setFontSize] = useState<"base" | "lg" | "xl">("lg");
   const [theme, setTheme] = useState<"light" | "sepia" | "dark">("sepia"); // Use sepia as default as requested
 
+  useEffect(() => {
+    document.documentElement.classList.remove('theme-light', 'theme-sepia', 'theme-dark');
+    document.documentElement.classList.add(`theme-${theme}`);
+  }, [theme]);
+
   const handleSearchSelect = (id: number) => {
     navigate(`/chapter/${id}`);
     setIsSearchOpen(false);
@@ -47,7 +52,7 @@ export default function App() {
   };
 
   return (
-    <div className={`flex h-full flex-col font-sans theme-${theme}`}>
+    <div className={`flex h-full flex-col font-sans transition-colors duration-300`}>
       <nav className="h-16 shrink-0 border-b border-border-subtle bg-surface-nav flex items-center justify-between px-4 sm:px-8 z-10 relative transition-colors">
         <Link 
           to="/"
