@@ -41,7 +41,7 @@ export function ArticleLayout({ chapterId, onChapterClick }: ArticleLayoutProps)
   const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
   const [sidebarTab, setSidebarTab] = useState<'chapters' | 'toc'>('chapters');
-  const [contentTab, setContentTab] = useState<'commentary' | 'original'>('original');
+  const [contentTab, setContentTab] = useState<'commentary' | 'original'>('commentary');
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const originalChapter = (lbcfData as any).chapters[chapterId.toString()];
@@ -273,6 +273,16 @@ export function ArticleLayout({ chapterId, onChapterClick }: ArticleLayoutProps)
 
           <div className="flex justify-center gap-4 mb-8">
             <button
+              onClick={() => setContentTab('commentary')}
+              className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
+                contentTab === 'commentary' 
+                  ? 'bg-accent text-white shadow-md' 
+                  : 'bg-surface-sidebar text-text-secondary hover:text-text-primary border border-border-subtle'
+              }`}
+            >
+              Study & Commentary
+            </button>
+            <button
               onClick={() => setContentTab('original')}
               className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
                 contentTab === 'original' 
@@ -281,16 +291,6 @@ export function ArticleLayout({ chapterId, onChapterClick }: ArticleLayoutProps)
               }`}
             >
               1689 Confession
-            </button>
-            <button
-              onClick={() => setContentTab('commentary')}
-              className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
-                contentTab === 'commentary' 
-                  ? 'bg-accent text-white shadow-md' 
-                  : 'bg-surface-sidebar text-text-secondary hover:text-text-primary border border-border-subtle'
-              }`}
-            >
-              Commentary
             </button>
           </div>
 
