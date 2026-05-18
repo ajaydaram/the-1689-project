@@ -23,7 +23,7 @@ html {
   --color-accent-subtle: var(--theme-accent-subtle);
 }
 
-:root {
+:root, :root[data-theme="sepia"] {
   /* Default Sepia theme (previously the only theme) */
   --theme-surface-bg: #F8F7F4;
   --theme-surface-content: #FCFBF7;
@@ -40,7 +40,7 @@ html {
   --theme-glow-outer: 0 4px 20px rgba(0,0,0,0.05);
 }
 
-.theme-light {
+:root[data-theme="light"] {
   --theme-surface-bg: #f4f4f5;
   --theme-surface-content: #ffffff;
   --theme-surface-sidebar: #fafafa;
@@ -56,7 +56,7 @@ html {
   --theme-glow-outer: 0 4px 20px rgba(0,0,0,0.03);
 }
 
-.theme-dark {
+:root[data-theme="dark"] {
   --theme-surface-bg: #09090b;
   --theme-surface-content: #18181b;
   --theme-surface-sidebar: #121214;

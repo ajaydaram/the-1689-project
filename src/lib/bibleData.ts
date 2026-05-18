@@ -1,5 +1,4 @@
 export type BibleBook = {
-  name: string;
   abbrev: string;
   chapters: string[][];
 }
@@ -15,7 +14,12 @@ export async function getBibleData(): Promise<BibleData> {
     loadPromise = fetch('/bible.json')
       .then(res => {
          if (!res.ok) throw new Error("Failed to load bible.json");
-         return res.json();
+         return res.text();
+      })
+      .then(text => {
+         // Handle potential BOM issue
+         if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+         return JSON.parse(text);
       })
       .then((data) => {
         cachedData = data as BibleData;
@@ -25,21 +29,73 @@ export async function getBibleData(): Promise<BibleData> {
   return loadPromise;
 }
 
-const bookNameMap: Record<string, string> = {
-  'gen': 'Genesis', 'ex': 'Exodus', 'exod': 'Exodus', 'lev': 'Leviticus', 'num': 'Numbers', 'deut': 'Deuteronomy',
-  'josh': 'Joshua', 'judg': 'Judges', '1 sam': '1 Samuel', '2 sam': '2 Samuel',
-  '1 kgs': '1 Kings', '2 kgs': '2 Kings', '1 chron': '1 Chronicles', '1 chr': '1 Chronicles',
-  '2 chron': '2 Chronicles', '2 chr': '2 Chronicles', 'neh': 'Nehemiah', 'esth': 'Esther',
-  'ps': 'Psalms', 'psalm': 'Psalms', 'prov': 'Proverbs', 'eccles': 'Ecclesiastes', 'ecc': 'Ecclesiastes',
-  'song': 'Song of Solomon', 'isa': 'Isaiah', 'jer': 'Jeremiah', 'lam': 'Lamentations', 'ezek': 'Ezekiel',
-  'dan': 'Daniel', 'hos': 'Hosea', 'obad': 'Obadiah', 'mic': 'Micah', 'nah': 'Nahum',
-  'hab': 'Habakkuk', 'zeph': 'Zephaniah', 'hag': 'Haggai', 'zech': 'Zechariah', 'mal': 'Malachi',
-  'matt': 'Matthew', 'mt': 'Matthew', 'mk': 'Mark', 'lk': 'Luke', 'jn': 'John',
-  'rom': 'Romans', '1 cor': '1 Corinthians', '2 cor': '2 Corinthians', 'gal': 'Galatians',
-  'eph': 'Ephesians', 'phil': 'Philippians', 'col': 'Colossians', '1 thess': '1 Thessalonians',
-  '2 thess': '2 Thessalonians', '1 tim': '1 Timothy', '2 tim': '2 Timothy', 'tit': 'Titus',
-  'philem': 'Philemon', 'heb': 'Hebrews', 'jas': 'James', '1 pet': '1 Peter', '2 pet': '2 Peter',
-  '1 jn': '1 John', '2 jn': '2 John', '3 jn': '3 John', 'rev': 'Revelation'
+const abbrevMap: Record<string, string> = {
+  'genesis': 'gn', 'gen': 'gn',
+  'exodus': 'ex', 'exod': 'ex',
+  'leviticus': 'lv', 'lev': 'lv',
+  'numbers': 'nm', 'num': 'nm',
+  'deuteronomy': 'dt', 'deut': 'dt',
+  'joshua': 'js', 'josh': 'js',
+  'judges': 'jud', 'judg': 'jud',
+  'ruth': 'rt',
+  '1 samuel': '1sm', '1 sam': '1sm',
+  '2 samuel': '2sm', '2 sam': '2sm',
+  '1 kings': '1kgs', '1 kgs': '1kgs',
+  '2 kings': '2kgs', '2 kgs': '2kgs',
+  '1 chronicles': '1ch', '1 chron': '1ch', '1 chr': '1ch',
+  '2 chronicles': '2ch', '2 chron': '2ch', '2 chr': '2ch',
+  'ezra': 'ezr',
+  'nehemiah': 'ne', 'neh': 'ne',
+  'esther': 'et', 'esth': 'et',
+  'job': 'job',
+  'psalms': 'ps', 'psalm': 'ps',
+  'proverbs': 'prv', 'prov': 'prv',
+  'ecclesiastes': 'ec', 'eccles': 'ec', 'ecc': 'ec',
+  'song of solomon': 'so', 'song': 'so',
+  'isaiah': 'is', 'isa': 'is',
+  'jeremiah': 'jr', 'jer': 'jr',
+  'lamentations': 'lm', 'lam': 'lm',
+  'ezekiel': 'ez', 'ezek': 'ez',
+  'daniel': 'dn', 'dan': 'dn',
+  'hosea': 'ho', 'hos': 'ho',
+  'joel': 'jl',
+  'amos': 'am',
+  'obadiah': 'ob', 'obad': 'ob',
+  'jonah': 'jn',
+  'micah': 'mi', 'mic': 'mi',
+  'nahum': 'na', 'nah': 'na',
+  'habakkuk': 'hk', 'hab': 'hk',
+  'zephaniah': 'zp', 'zeph': 'zp',
+  'haggai': 'hg', 'hag': 'hg',
+  'zechariah': 'zc', 'zech': 'zc',
+  'malachi': 'ml', 'mal': 'ml',
+  'matthew': 'mt', 'matt': 'mt', 'mt': 'mt',
+  'mark': 'mk',
+  'luke': 'lk',
+  'john': 'jo', 'jn': 'jo',
+  'acts': 'act',
+  'romans': 'rm', 'rom': 'rm',
+  '1 corinthians': '1co', '1 cor': '1co',
+  '2 corinthians': '2co', '2 cor': '2co',
+  'galatians': 'gl', 'gal': 'gl',
+  'ephesians': 'eph',
+  'philippians': 'ph', 'phil': 'ph',
+  'colossians': 'cl', 'col': 'cl',
+  '1 thessalonians': '1ts', '1 thess': '1ts',
+  '2 thessalonians': '2ts', '2 thess': '2ts',
+  '1 timothy': '1tm', '1 tim': '1tm',
+  '2 timothy': '2tm', '2 tim': '2tm',
+  'titus': 'tt', 'tit': 'tt',
+  'philemon': 'phm', 'philem': 'phm',
+  'hebrews': 'hb', 'heb': 'hb',
+  'james': 'jm', 'jas': 'jm',
+  '1 peter': '1pe', '1 pet': '1pe',
+  '2 peter': '2pe', '2 pet': '2pe',
+  '1 john': '1jo', '1 jn': '1jo',
+  '2 john': '2jo', '2 jn': '2jo',
+  '3 john': '3jo', '3 jn': '3jo',
+  'jude': 'jd',
+  'revelation': 're', 'rev': 're'
 };
 
 export async function getPassageText(reference: string): Promise<string> {
@@ -62,8 +118,8 @@ export async function getPassageText(reference: string): Promise<string> {
     const verseStr = chapterMatch[2].trim();
     
     // Jude case etc. where the chapter might just be verses if it's a 1-chapter book
-    const normalizedBook = bookNameMap[bookStr.toLowerCase()] || bookStr;
-    const book = data.find(b => b.name.toLowerCase() === normalizedBook.toLowerCase());
+    const abbrev = abbrevMap[bookStr.toLowerCase()] || bookStr.toLowerCase();
+    const book = data.find(b => b.abbrev === abbrev);
     if (!book) return "Book not found.";
     
     // If book has only 1 chapter, treat the number as verse
@@ -77,8 +133,8 @@ export async function getPassageText(reference: string): Promise<string> {
   let bookStr = match[1].replace(/\.$/, '').trim();
   const verseStr = match[2].trim(); // "16:29, 31"
   
-  const normalizedBook = bookNameMap[bookStr.toLowerCase()] || bookStr;
-  const book = data.find(b => b.name.toLowerCase() === normalizedBook.toLowerCase());
+  const abbrev = abbrevMap[bookStr.toLowerCase()] || bookStr.toLowerCase();
+  const book = data.find(b => b.abbrev === abbrev);
   if (!book) return "Book not found.";
   
   const colonIdx = verseStr.indexOf(':');

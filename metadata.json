@@ -1,6 +1,8 @@
 {
-  "name": "1689 Confession Reader",
-  "description": "A classic layout for reading the 1689 London Baptist Confession of Faith.",
+  "name": "The 1689 Project",
+  "description": "An immersive, typography-driven web application for studying the 1689 London Baptist Confession of Faith.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

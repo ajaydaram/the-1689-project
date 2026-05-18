@@ -30,8 +30,7 @@ export default function App() {
   const [theme, setTheme] = useState<"light" | "sepia" | "dark">("sepia"); // Use sepia as default as requested
 
   useEffect(() => {
-    document.documentElement.classList.remove('theme-light', 'theme-sepia', 'theme-dark');
-    document.documentElement.classList.add(`theme-${theme}`);
+    document.documentElement.dataset.theme = theme;
   }, [theme]);
 
   const handleSearchSelect = (id: number) => {
@@ -69,13 +68,17 @@ export default function App() {
           >
             Chapters
           </Link>
-          <div 
+          
+          <button 
             onClick={() => setIsSearchOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border-strong bg-surface-bg hover:bg-surface-sidebar transition-colors cursor-text text-text-secondary w-48 sm:w-64"
+            className="flex items-center justify-center p-2 rounded hover:bg-surface-sidebar text-text-secondary hover:text-accent transition-colors group relative"
+            title="Search"
           >
             <Search className="w-4 h-4" />
-            <span className="text-xs">Search topics, scriptures...</span>
-          </div>
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-text-primary text-surface-content text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+              Search
+            </span>
+          </button>
           
           <div className="h-4 w-px bg-border-strong"></div>
 
